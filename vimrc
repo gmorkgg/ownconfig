@@ -2,14 +2,14 @@ if v:lang =~ "utf8$" || v:lang =~ "UTF-8$"
    set fileencodings=ucs-bom,utf-8,latin1
 endif
 
-set nocompatible	" Use Vim defaults (much better!)
-set bs=indent,eol,start		" allow backspacing over everything in insert mode
-"set ai			" always set autoindenting on
-"set backup		" keep a backup file
-set viminfo='20,\"50	" read/write a .viminfo file, don't store more
-			" than 50 lines of registers
-set history=50		" keep 50 lines of command line history
-set ruler		" show the cursor position all the time
+set nocompatible        " Use Vim defaults (much better!)
+set bs=indent,eol,start         " allow backspacing over everything in insert mode
+"set ai                 " always set autoindenting on
+"set backup             " keep a backup file
+set viminfo='20,\"50    " read/write a .viminfo file, don't store more
+                        " than 50 lines of registers
+set history=50          " keep 50 lines of command line history
+set ruler               " show the cursor position all the time
 
 " Only do this part when compiled with support for autocommands
 if has("autocmd")
@@ -55,79 +55,13 @@ filetype plugin on
 
 if &term=="xterm"
      set t_Co=8
-     set t_Sb=[4%dm
-     set t_Sf=[3%dm
+     set t_Sb=dm
+     set t_Sf=dm
 endif
 
 " Don't wake up system with blinking cursor:
 " http://www.linuxpowertop.org/known.php
 let &guicursor = &guicursor . ",a:blinkon0"
-
-
-
-"set fileencodings=ucs-bom,utf-8,cp936
-set fileencodings=utf-8,cp936
-" 显示中文帮助
-if version >= 603
-	set helplang=cn
-	set encoding=utf-8
-endif
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"""""新文件标题
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"新建.c,.h,.sh,.java文件，自动插入文件头 
-autocmd BufNewFile *.cpp,*.[ch],*.sh,*.java exec ":call SetTitle()" 
-""定义函数SetTitle，自动插入文件头 
-func SetTitle() 
-"如果文件类型为.sh文件 
-if &filetype == 'sh' 
-call setline(1,"\#####################################") 
-call append(line("."), "\# File Name: ".expand("%")) 
-call append(line(".")+3, "\# Created Time: ".strftime("%c")) 
-call append(line(".")+4, "\#####################################") 
-call append(line(".")+5, "\#!/bin/bash") 
-call append(line(".")+6, "") 
-"else 
-"call setline(1, "/*************************************************************************") 
-"call append(line("."), "	> File Name: ".expand("%")) 
-"call append(line(".")+3, "	> Created Time: ".strftime("%c")) 
-"call append(line(".")+4, " ************************************************************************/") 
-"call append(line(".")+5, "")
-endif
-if &filetype == 'py' 
-call setline(1,"\#####################################") 
-call append(line("."), "\# File Name: ".expand("%")) 
-call append(line(".")+3, "\# Created Time: ".strftime("%c")) 
-call append(line(".")+4, "\#####################################") 
-call append(line(".")+5, "\#!/usr/bin/python") 
-call append(line(".")+6, "") 
-endif
-if &filetype == 'python' 
-call setline(1,"\#####################################") 
-call append(line("."), "\# File Name: ".expand("%")) 
-call append(line(".")+3, "\# Created Time: ".strftime("%c")) 
-call append(line(".")+4, "\#####################################") 
-call append(line(".")+5, "\#!/usr/bin/python") 
-call append(line(".")+6, "") 
-endif
-if &filetype == 'cpp'
-call append(line(".")+6, "#include<iostream>")
-call append(line(".")+7, "using namespace std;")
-call append(line(".")+8, "")
-endif
-if &filetype == 'c'
-call append(line(".")+6, "#include<stdio.h>")
-call append(line(".")+7, "")
-endif
-"	if &filetype == 'java'
-"		call append(line(".")+6,"public class ".expand("%"))
-"		call append(line(".")+7,"")
-"	endif
-"新建文件后，自动定位到文件末尾 autocmd BufNewFile * normal G
-endfunc 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 "代码补全 
 set completeopt=preview,menu 
@@ -185,22 +119,3 @@ filetype indent on
 filetype plugin indent on 
 "打开文件类型检测, 加了这句才可以用智能补全
 set completeopt=longest,menu
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-
-"Add argument (can be negative, default 1) to global variable i.
-" Return value of i before the change.
-
-function! Incr()
-	let a = line('.') - line("'<")
-	let c = virtcol("'<")
-	if a > 0 
-		execute 'normal! '.c.'|'.a."\<C-a>"
-	endif
-	normal `<
-endfunction
-vnoremap <C-a> :call Incr()<CR>
-
-"colorscheme evening
-"colorscheme morning
-"colorscheme torte
