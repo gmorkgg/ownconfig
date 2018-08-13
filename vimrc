@@ -120,7 +120,7 @@ filetype plugin indent on
 "打开文件类型检测, 加了这句才可以用智能补全
 set completeopt=longest,menu
 
-#记住上次离开的位置
+"#记住上次离开的位置
 set viminfo='10,\"100,:20,%,n~/.viminfo 
 au BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
 
