@@ -1,0 +1,76 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+#此脚本是用来给zabbix调用，告警消息发送到钉钉群里，需要在钉钉群里先添加机器人，生成的机器人url_token信息写到dingtalk_url变量下即可。
+#然后配置zabbix调用此脚本：
+#zabbix调用脚本参数顺序可参考：
+#server
+#{ALERT.SENDTO}
+#{ALERT.MESSAGE}
+#""
+import time
+import hmac
+import hashlib
+import base64
+import urllib.parse
+import requests
+import json
+import sys
+
+
+headers = {'Content-Type': 'application/json;charset=utf-8'}
+
+#把这个顶顶机器人url_token改成你自己的才能用
+dingtalk_url = "https://oapi.dingtalk.com/robot/send?access_token=97754f7da088d8aa0ecdec925cf68d2e6ed077ebabxxxxxxxxxxxxxxxxxxxx"
+
+dict_webhook = {
+    #server
+    "server": dingtalk_url
+}
+
+
+def build_webhook(token, secret):
+    """
+
+    :param token: 钉钉机器人的token值
+    :param secret: 钉钉机器人secret
+    :return: 可以直接使用的webhook
+    """
+    timestamp = round(time.time() * 1000)
+    secret_enc = secret.encode("utf-8")
+    string_to_sign = '{}\n{}'.format(timestamp, secret)
+    string_to_sign_enc = string_to_sign.encode('utf-8')
+    hmac_code = hmac.new(secret_enc, string_to_sign_enc, digestmod=hashlib.sha256).digest()
+    base64sign = base64.b64encode(hmac_code)
+    sign = urllib.parse.quote_from_bytes(base64sign)
+    webhook = token + "&timestamp=" + str(timestamp) + "&sign=" + sign
+    return webhook
+
+
+def msg(api_url, user, sendto, text):
+    json_text = {
+     "msgtype": "markdown",
+        "markdown": {
+            "title":"zabbix monitor",
+            "text": text
+        },
+        "at": {
+            "isAtAll": "false",
+            "atMobiles": user
+        }
+    }
+
+    r = requests.post(api_url, data=json.dumps(json_text), headers=headers).json()
+    print(r)
+
+
+if __name__ == '__main__':
+    alertto = sys.argv[1]
+    #atuser = sys.argv[2]                # [15888888888,15999999999]
+    atuser = 15888888888
+    alertrole = sys.argv[2] 
+    zbx_msg = sys.argv[3]
+    notuse = sys.argv[4]
+    wh = dict_webhook[alertto]
+
+    msg(wh, alertrole, atuser, zbx_msg)
