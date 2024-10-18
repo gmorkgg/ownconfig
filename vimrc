@@ -1,3 +1,6 @@
+"linux vim配置，让vim更好用: ~/.vimrc或者  ~/vimrc
+"例如开启行号,颜色高亮，utf8编码支持，列编辑数字递增
+
 if v:lang =~ "utf8$" || v:lang =~ "UTF-8$"
    set fileencodings=ucs-bom,utf-8,latin1
 endif
